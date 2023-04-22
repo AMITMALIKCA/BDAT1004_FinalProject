@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .back-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="back-button" href="/">Back</a>
+        <h2>Visualization Dashboard</h2>
+    </div>
+    <canvas id="riceChart"></canvas>
+    <canvas id="wheatChart"></canvas>
+    <canvas id="maizeChart"></canvas>
+    <canvas id="potatoChart"></canvas>
+    <script>
+        fetch('/getjson')
+            .then(response => response.json())
+            .then(data => {
+
+                // Filter the data to remove NaN production values and select specific crops
+                const riceData = data.filter(item => item.Crop === 'Rice' && !isNaN(item.Production));
+                const wheatData = data.filter(item => item.Crop === 'Wheat' && !isNaN(item.Production));
+                const maizeData = data.filter(item => item.Crop === 'Maize' && !isNaN(item.Production));
+                const potatoData = data.filter(item => item.Crop === 'Potato' && !isNaN(item.Production));
+
+                // Extract the years and production values from the filtered data
+                const riceYears = riceData.map(item => item.Crop_Year);
+                const riceProduction = riceData.map(item => item.Production);
+                const wheatYears = wheatData.map(item => item.Crop_Year);
+                const wheatProduction = wheatData.map(item => item.Production);
+                const maizeYears = maizeData.map(item => item.Crop_Year);
+                const maizeProduction = maizeData.map(item => item.Production);
+                const potatoYears = potatoData.map(item => item.Crop_Year);
+                const potatoProduction = potatoData.map(item => item.Production);
+
+                // Create the rice chart using the years and production data
+                const riceCtx = document.getElementById('riceChart').getContext('2d');
+                const riceChart = new Chart(riceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: riceYears,
+                        datasets: [{
+                            label: 'Rice Production',
+                            data: riceProduction,
+                            fill: false,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {}
+                });
+
+                // Create the wheat chart using the years and production data
+                const wheatCtx = document.getElementById('wheatChart').getContext('2d');
+                const wheatChart = new Chart(wheatCtx, {
+                    type: 'line',
+                    data: {
+                        labels: wheatYears,
+                        datasets: [{
+                            label: 'Wheat Production',
+                            data: wheatProduction,
+                            fill: false,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {}
+                });
+
+                // Create the maize chart using the years and production data
+                const maizeCtx = document.getElementById('maizeChart').getContext('2d');
+                const maizeChart = new Chart(maizeCtx, {
+                    type: 'line',
+                    data: {
+                        labels: maizeYears,
+                        datasets: [{
+                            label: 'Maize Production',
+                            data: maizeProduction,
+                            fill: false,
+                            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {}
+                });
+
+            });
+    </script>
+</body>
+</html>
